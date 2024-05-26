@@ -4,7 +4,7 @@
   "description": "An imaginary Starbucks API to order coffee. This is a fun project to study RESTful principles and HATEOAS in detail, directly inspired by https://www.infoq.com/articles/webber-rest-workflow/",
   "main": "src/index.ts",
   "scripts": {
-    "start": "tsx src/index.ts",
+    "start": "tsx watch src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,8 +24,8 @@
   "homepage": "https://github.com/notten13/starbucks-api#readme",
   "dependencies": {
     "express": "^4.19.2",
-    "tsx": "^4.11.0",
-    "xml": "^1.0.1"
+    "lowdb": "^7.0.1",
+    "tsx": "^4.11.0"
   },
   "devDependencies": {
     "@types/node": "^20.12.12"
