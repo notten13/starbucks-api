@@ -61,4 +61,25 @@ router.post('/', async (req, res) => {
   });
 });
 
+router.options('/:orderId', (req, res) => {
+  const order = db.data.orders.find(
+    (order) => order.id === Number(req.params.orderId)
+  );
+
+  if (!order) {
+    res.status(404).send({
+      error: 'Order not found',
+    });
+
+    res.end();
+    return;
+  }
+
+  // We only allowing updating an order if the barista hasn't started making it yet
+  const allowedMethods = order.status === 'PLACED' ? 'GET, PUT' : 'GET';
+
+  res.header('Allow', allowedMethods);
+  res.end();
+});
+
 export default router;

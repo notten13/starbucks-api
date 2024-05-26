@@ -13,3 +13,11 @@ The response should also include links to other resources which are necessary fo
 ![Creating an order](./screenshots//creating-an-order.png)
 
 ![Response headers after creating an order](./screenshots/creating-an-order-headers.png)
+
+## Using OPTIONS to find out what we're allowed to do
+
+One key idea with REST and HATEOAS is that the client can ask the server what actions it can perform on a resource by issuing an OPTIONS request.
+
+For example after creating an order, the client can send an `OPTIONS` request to the URL that was returned in the `Location` header. The server's response will include an `Allow` header listing all the HTTP methods that are available on the resource **in its current state**. This is a key idea that took me a while to understand with REST: it's not about allowing certain HTTP methods on **endpoints**, it's meant to be much more dynamic, with HTTP methods becoming available or unavailable on **resources** depending on the state of that particular resource.
+
+In our case, if the order hasn't already been picked up by the barista, there's still time to amend it (by asking for extra shot of coffee for example): in this case, the server will reply with `Allow: GET, PUT`. Otherwise, it will reply with `Allow: GET`.
