@@ -1,0 +1,33 @@
+{
+  "name": "starbucks-api",
+  "version": "0.1.0",
+  "description": "An imaginary Starbucks API to order coffee. This is a fun project to study RESTful principles and HATEOAS in detail, directly inspired by https://www.infoq.com/articles/webber-rest-workflow/",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notten13/starbucks-api.git"
+  },
+  "keywords": [
+    "rest",
+    "api",
+    "hateoas"
+  ],
+  "author": "notten13",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/notten13/starbucks-api/issues"
+  },
+  "homepage": "https://github.com/notten13/starbucks-api#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "tsx": "^4.11.0",
+    "xml": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12"
+  }
+}
