@@ -35,3 +35,15 @@ This is a good example of where a REST API should deal with conflicts gracefully
 If a client wants to update a resource, the `PUT` request must include an `If-Match` header with the `Etag` of the resource that the client knows about. The server must compare this with the actual current ETag and if they don't match, it means another request has updated the resource. The server replies with `409 Conflict`, and the client should retry the whole process (`GET`ting a fresh copy of the resource and then updating it).
 
 ![HTTP 412](./screenshots/HTTP-412.png)
+
+## Summary of HTTP codes I've used
+
+| HTTP Code | Meaning               | Details                                                                                                    |     |     |
+| --------- | --------------------- | ---------------------------------------------------------------------------------------------------------- | --- | --- |
+| 200       | OK                    |                                                                                                            |     |     |
+| 201       | Created               | A new resource has been created successfully. Its URL is available in the Location HTTP header.            |     |     |
+| 404       | Not Found             | No resource was found at the requested URL.                                                                |     |     |
+| 405       | Method Not Allowed    | The HTTP method used by the client is not allowed on the resource.                                         |     |     |
+| 409       | Conflict              | The resource has been updated by another client. The client should re-fetch the resource and retry.        |     |     |
+| 412       | Precondition Failed   | The current ETag of the resource does not match the one held by the client and sent in the If-Match header |     |     |
+| 428       | Precondition Required | The client didn't include the required If-Match header                                                     |
