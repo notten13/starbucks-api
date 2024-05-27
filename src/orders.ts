@@ -1,5 +1,6 @@
 import express from 'express';
 import db, { Order, Payment } from './db';
+import { generateETag } from './utils';
 
 const router = express.Router();
 
@@ -15,6 +16,8 @@ router.post('/', async (req, res) => {
 
   const amount = drinkPrices[req.body.drink];
 
+  const now = new Date();
+
   if (!amount) {
     res.status(400).send({
       error: 'Invalid drink',
@@ -24,16 +27,21 @@ router.post('/', async (req, res) => {
     return;
   }
 
-  const order: Order = {
-    id: orderId,
-    drink: req.body.drink,
-    status: 'PLACED',
-  };
-
   const payment: Payment = {
     id: paymentId,
     amount,
     status: 'PENDING',
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  const order: Order = {
+    id: orderId,
+    drink: req.body.drink,
+    status: 'PLACED',
+    paymentId,
+    createdAt: now,
+    updatedAt: now,
   };
 
   db.data.orders.push(order);
@@ -47,11 +55,14 @@ router.post('/', async (req, res) => {
   // The "Location" header should indicate where the created resource is
   res.header('Location', `/orders/${orderId}`);
 
-  // We don't need to include the internal order ID in the response body
-  const { id, ...orderWithoutId } = order;
+  // The "ETag" header can be used by clients in further requests to prevent conflicts
+  res.header('ETag', generateETag(now));
 
   res.send({
-    order: orderWithoutId,
+    order: {
+      drink: order.drink,
+      status: order.status,
+    },
     links: [
       {
         rel: 'payment',
@@ -80,6 +91,41 @@ router.options('/:orderId', (req, res) => {
 
   res.header('Allow', allowedMethods);
   res.end();
+});
+
+router.get('/:orderId', (req, res) => {
+  const order = db.data.orders.find(
+    (order) => order.id === Number(req.params.orderId)
+  );
+
+  if (!order) {
+    res.status(404).send({
+      error: 'Order not found',
+    });
+
+    res.end();
+    return;
+  }
+
+  // The "ETag" header can be used by clients in further requests to prevent conflicts
+  res.header('ETag', generateETag(order.updatedAt));
+
+  res.send({
+    order: {
+      drink: order.drink,
+      status: order.status,
+    },
+    links: [
+      {
+        rel: 'self',
+        href: `/orders/${order.id}`,
+      },
+      {
+        rel: 'payment',
+        href: `/payments/${order.paymentId}`,
+      },
+    ],
+  });
 });
 
 export default router;
